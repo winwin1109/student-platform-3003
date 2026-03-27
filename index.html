@@ -13,281 +13,373 @@
       gtag('config', 'G-1G1KSXH8DB');
     </script>
     <style>
+        /* =========================================
+           1. 主題變數設定 (日式柔和風格)
+           ========================================= */
+        /* 預設：簡約無印風 (Matcha & Beige) */
         :root {
-            --primary-color: #e67e22; /* LAN3003 主色 */
-            --dark-color: #2c3e50;
-            --bg-color: #f4f7f6;
-            --guide-bg: #e8f6f3;
-            --guide-border: #1abc9c;
+            --bg-body: #f7f5f0; /* 柔和米色 */
+            --bg-shelf: rgba(255, 255, 255, 0.6);
+            --primary-color: #8ba082; /* 抹茶綠 */
+            --primary-hover: #758a6d;
+            --text-main: #4a4a4a; /* 深灰而非純黑，降低對比 */
+            --text-light: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: 1px solid rgba(139, 160, 130, 0.2);
+            --card-radius: 12px;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            --header-bg: linear-gradient(135deg, #8ba082 0%, #a4b89a 100%);
+            --guide-bg: rgba(255, 255, 255, 0.7);
+            --glass-blur: blur(8px);
         }
 
+        /* 創意：春日櫻花風 (Sakura Pink) */
+        body.theme-creative {
+            --bg-body: #fcf6f5; /* 極淡的粉白 */
+            --bg-shelf: rgba(255, 255, 255, 0.8);
+            --primary-color: #d8a1a4; /* 柔和櫻花粉 */
+            --primary-hover: #c48b8e;
+            --text-main: #5c4a4d;
+            --card-bg: #ffffff;
+            --card-border: 1px solid rgba(216, 161, 164, 0.3);
+            --card-radius: 20px 8px 20px 8px; /* 保留一點創意的形狀 */
+            --card-shadow: 0 6px 15px rgba(216, 161, 164, 0.1);
+            --header-bg: linear-gradient(135deg, #d8a1a4 0%, #e8babb 100%);
+            --guide-bg: #ffffff;
+        }
+
+        /* 科技：深夜藍染風 (Indigo & Slate) */
+        body.theme-tech {
+            --bg-body: #2c363f; /* 藏青深灰 */
+            --bg-shelf: rgba(255, 255, 255, 0.03);
+            --primary-color: #6b7c96; /* 灰藍色 */
+            --primary-hover: #8294b0;
+            --text-main: #e8e8e8; /* 柔和白 */
+            --card-bg: #37424d;
+            --card-border: 1px solid rgba(255, 255, 255, 0.08);
+            --card-radius: 8px;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            --header-bg: linear-gradient(135deg, #37424d 0%, #4a5663 100%);
+            --guide-bg: rgba(55, 66, 77, 0.6);
+        }
+
+        /* =========================================
+           2. 全域與排版基礎
+           ========================================= */
         body {
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
-            background-color: var(--bg-color);
+            background: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
-            color: #333;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background 0.6s ease, color 0.6s ease;
         }
 
         header {
             text-align: center;
+            margin-bottom: 20px;
+            padding: 30px 20px;
+            background: var(--header-bg);
+            color: var(--text-light);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            transition: background 0.6s ease;
+        }
+
+        header h1 { margin: 0; font-size: 2.2rem; font-weight: normal; letter-spacing: 1px; }
+        header p { margin: 10px 0 0 0; font-size: 1.1rem; opacity: 0.9; }
+
+        /* =========================================
+           3. 控制列 (主題切換)
+           ========================================= */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .theme-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: var(--card-border);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: var(--card-shadow);
+        }
+        .theme-btn:hover, .theme-btn.active {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+           4. 書架與卡片設計
+           ========================================= */
+        .shelf-section {
+            background: var(--bg-shelf);
+            backdrop-filter: var(--glass-blur);
+            padding: 25px;
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
             margin-bottom: 30px;
-            padding: 20px;
-            background: var(--dark-color);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: var(--card-border);
+            min-height: 150px;
+            transition: all 0.6s ease;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            color: var(--primary-color);
-        }
-
-        header p {
-            margin: 10px 0 0 0;
-            font-size: 1.1rem;
-            color: #ecf0f1;
-        }
-
-        /* --- 視圖控制 --- */
         .shelf-header {
             display: flex;
             align-items: center;
-            justify-content: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
+            border-bottom: 1px solid rgba(150,150,150,0.2);
             padding-bottom: 10px;
         }
 
-        .shelf-title {
-            font-size: 1.8rem;
-            color: var(--dark-color);
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .shelf-title::before {
-            content: '🎯';
-            margin-right: 10px;
-        }
+        .shelf-title { font-size: 1.4rem; margin: 0; display: flex; align-items: center; font-weight: normal; }
+        .shelf-title span { color: var(--primary-color); margin-right: 10px; }
 
         .chest-container {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 30px;
-            padding: 20px 0;
-        }
-
-        /* 遊戲項目樣式 */
-        .chest-item {
-            text-align: center;
-            width: 220px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
-            background: #fff;
-            padding: 15px;
+            gap: 20px;
+            min-height: 100px;
+            padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
+            transition: background 0.3s;
+        }
+        .chest-container.drag-over {
+            background: rgba(0,0,0,0.03);
+            border: 2px dashed var(--primary-color);
+        }
+
+        /* 卡片本體 */
+        .chest-item {
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            width: calc(20% - 16px);
+            min-width: 180px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-
+        
         .chest-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
             border-color: var(--primary-color);
+            z-index: 10;
+        }
+        
+        .chest-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
         }
 
+        /* 卡片標題與圖示 */
         .chest-title {
             background: var(--primary-color);
-            color: white;
+            color: var(--text-light);
             padding: 8px 5px;
-            border-radius: 5px;
+            border-radius: 6px;
             margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 1rem;
-            min-height: 48px;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+            font-size: 0.95rem;
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
+            transition: background 0.6s ease;
         }
 
         .chest-icon {
-            font-size: 70px;
+            font-size: 55px;
             line-height: 1.2;
             margin-bottom: 10px;
-            transition: transform 0.3s;
+            transition: transform 0.4s ease;
+            pointer-events: none;
         }
-        
-        .chest-item:hover .chest-icon {
-            transform: scale(1.1);
-        }
+        .chest-item:hover .chest-icon { transform: scale(1.1); }
 
-        /* --- 手機語音設定指南 --- */
-        .guide-section {
-            background: var(--guide-bg);
-            border: 2px dashed var(--guide-border);
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 40px;
-        }
-
-        .guide-section h2 {
-            color: #16a085;
-            text-align: center;
-            margin-top: 0;
-        }
-
-        .guide-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .guide-col {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .guide-col h3 {
-            color: var(--dark-color);
-            border-bottom: 2px solid #1abc9c;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-        }
-
-        .guide-text ul { padding-left: 20px; }
-        .guide-text li { margin-bottom: 10px; line-height: 1.6; }
-        
-        .lang-tag {
-            background: #e0f2f1;
-            color: #00897b;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-right: 5px;
-            font-size: 0.85em;
-        }
-
-        /* --- 彈跳視窗 (Modal) --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 15px;
-            padding: 30px;
-            position: relative;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close-btn {
+        /* 卡片工具：加入最愛按鈕 */
+        .fav-btn {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 30px;
+            top: 10px;
+            right: 10px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid rgba(150,150,150,0.2);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 14px;
             cursor: pointer;
-            color: #aaa;
-        }
-
-        .modal-header {
-            font-size: 1.5rem;
-            color: var(--dark-color);
-            margin-bottom: 20px;
-            font-weight: bold;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-        }
-
-        .modal-body h3 {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            margin-top: 20px;
-        }
-
-        .goal-list {
-            background: #f9f9f9;
-            padding: 15px 20px 15px 30px;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-
-        .action-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 25px;
-            gap: 15px;
-        }
-
-        .game-link-btn {
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: background 0.3s;
-        }
-
-        .game-link-btn:hover { background: #d35400; }
-
-        .qr-display { text-align: center; margin-top: 10px; display: flex; flex-direction: column; align-items: center;}
-        .qr-display img { max-width: 150px; border: 1px solid #ddd; padding: 5px; background: white; }
-        .qr-label { display: block; margin-top: 5px; color: #666; font-size: 0.9rem; }
-        
-        .copy-btn {
-            margin-top: 10px;
-            padding: 6px 12px;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            z-index: 2;
         }
-        
-        .copy-btn:hover {
-            background-color: #e0e0e0;
-            border-color: #bbb;
+        .fav-btn:hover { transform: scale(1.15); border-color: #f1c40f; }
+        .fav-btn.active { color: #f1c40f; border-color: #f1c40f; background: rgba(241, 196, 15, 0.1); }
+
+        /* Emoji 貼紙展示區 */
+        .sticker-area {
+            position: absolute;
+            bottom: -12px;
+            right: -8px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            gap: -5px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .sticker {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
+            cursor: pointer;
+            margin-left: -8px;
+            transition: transform 0.2s;
+        }
+        .sticker:hover { transform: scale(1.2) translateY(-2px); }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        @media (max-width: 768px) {
-            .chest-item { width: 100%; max-width: 300px; }
+        /* =========================================
+           5. Emoji 裝飾工具列 (含新增的5個)
+           ========================================= */
+        .emoji-toolbar {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: var(--card-bg);
+            border: var(--card-border);
+            padding: 15px 10px;
+            border-radius: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+            backdrop-filter: var(--glass-blur);
+            max-height: 80vh;
+            overflow-y: auto;
+            scrollbar-width: none; /* 隱藏滾動條 Firefox */
+        }
+        .emoji-toolbar::-webkit-scrollbar { display: none; } /* 隱藏滾動條 Chrome */
+        
+        .emoji-toolbar-title {
+            writing-mode: vertical-rl;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            opacity: 0.7;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        .emoji-btn {
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            text-align: center;
+            user-select: none;
+            filter: grayscale(30%) opacity(0.8);
+        }
+        .emoji-btn:hover { transform: scale(1.2); filter: grayscale(0%) opacity(1); }
+        .emoji-btn.selected {
+            transform: scale(1.3);
+            filter: grayscale(0%) opacity(1);
+            background: rgba(139, 160, 130, 0.15);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        body.stamping-mode .chest-item {
+            cursor: crosshair;
+            border: 2px dashed var(--primary-color);
+            background: rgba(139, 160, 130, 0.02);
+        }
+
+        /* =========================================
+           6. 導引與 Modal
+           ========================================= */
+        .guide-section {
+            background: var(--guide-bg);
+            padding: 30px;
+            border-radius: var(--card-radius);
+            margin-top: auto;
+            border: var(--card-border);
+            box-shadow: var(--card-shadow);
+            transition: all 0.6s ease;
+        }
+        .guide-section h2 { color: var(--primary-color); text-align: center; margin-top: 0; font-weight: normal; }
+        .guide-content { display: flex; flex-wrap: wrap; gap: 30px; }
+        .guide-col { flex: 1; min-width: 300px; }
+        .guide-col h3 { border-bottom: 1px solid var(--primary-color); padding-bottom: 8px; margin-bottom: 15px; font-weight: normal; }
+        .lang-tag { background: rgba(0,0,0,0.05); padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+        body.theme-tech .lang-tag { background: rgba(255,255,255,0.1); }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 600px; border-radius: var(--card-radius);
+            padding: 35px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 90vh; overflow-y: auto; animation: slideDown 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); border: var(--card-border);
+        }
+        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: var(--text-main); opacity: 0.5; transition: all 0.3s;}
+        .close-btn:hover { opacity: 1; color: var(--primary-hover); }
+        .modal-header { font-size: 1.4rem; margin-bottom: 20px; font-weight: normal; border-bottom: 1px solid var(--primary-color); padding-bottom: 12px; }
+        .modal-body h3 { color: var(--primary-color); font-size: 1.1rem; margin-top: 20px; font-weight: normal; }
+        .goal-list { background: rgba(0,0,0,0.02); padding: 18px 20px 18px 30px; border-radius: 8px; line-height: 1.7; border: 1px solid rgba(0,0,0,0.03); }
+        body.theme-tech .goal-list { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05); }
+        
+        .action-area { display: flex; flex-direction: column; align-items: center; margin-top: 30px; gap: 15px; }
+        .game-link-btn { background: var(--primary-color); color: #fff; padding: 12px 35px; text-decoration: none; border-radius: 50px; font-size: 1.05rem; transition: background 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); letter-spacing: 1px;}
+        .game-link-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .qr-display { text-align: center; margin-top: 15px; display: flex; flex-direction: column; align-items: center;}
+        .qr-display img { max-width: 140px; border: 1px solid rgba(0,0,0,0.08); padding: 8px; background: white; border-radius: 8px; }
+        .qr-label { display: block; margin-top: 8px; font-size: 0.85rem; opacity: 0.6; }
+        .copy-btn { margin-top: 10px; padding: 6px 15px; background: transparent; border: 1px solid var(--primary-color); border-radius: 20px; cursor: pointer; font-size: 0.85rem; color: var(--primary-color); transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+        .copy-btn:hover { background: var(--primary-color); color: #fff; }
+
+        @media (max-width: 900px) {
+            .chest-item { width: calc(33.33% - 14px); }
+            .emoji-toolbar { flex-direction: row; bottom: 15px; right: 50%; transform: translateX(50%); padding: 10px 20px; width: max-content; max-width: 90vw; overflow-x: auto; border-radius: 20px;}
+            .emoji-toolbar-title { display: none; } /* 手機版隱藏文字節省空間 */
+            body { padding-bottom: 80px; }
+        }
+        @media (max-width: 600px) {
+            .chest-item { width: calc(50% - 10px); }
             header h1 { font-size: 1.5rem; }
+            .shelf-title { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -298,48 +390,72 @@
         <p>各位同學，請點選下方關卡進行考前重點回顧與練習</p>
     </header>
 
-    <main>
-        <section id="shelf-view" class="view-section active">
-            <div style="background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                <div class="shelf-header">
-                    <h2 class="shelf-title">學習任務一覽</h2>
-                </div>
-                
-                <div class="chest-container" id="game-container">
-                    </div>
-            </div>
-        </section>
+    <div class="controls">
+        <button class="theme-btn active" onclick="setTheme('default', this)">🍵 簡約無印</button>
+        <button class="theme-btn" onclick="setTheme('theme-creative', this)">🌸 春日櫻花</button>
+        <button class="theme-btn" onclick="setTheme('theme-tech', this)">🌙 深夜藍染</button>
+    </div>
 
-        <section class="guide-section">
-            <h2>📱 手機語音播放設定指南 (通用)</h2>
-            <div class="guide-content">
-                <div class="guide-col">
-                    <h3>🍎 iOS 用戶</h3>
-                    <div class="guide-text">
-                        <ul>
-                            <li><strong>解除靜音模式：</strong>請務必撥動機身側邊開關，確保<strong>不顯示橘色</strong>。</li>
-                            <li><strong>設定語音：</strong>設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文。
-                                <br><span class="lang-tag">普通話</span>選「China mainland／Taiwan」。
-                                <br><span class="lang-tag">廣東話</span>選「Hong Kong」。
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="guide-col">
-                    <h3>🤖 Android 用戶</h3>
-                    <div class="guide-text">
-                        <ul>
-                            <li><strong>調整媒體音量：</strong>確保拉大的是「媒體/音樂」音量。</li>
-                            <li><strong>設定語音 (TTS)：</strong>設定 → 語言與輸入 → 文字轉語音。
-                                <br><span class="lang-tag">普通話</span>選「中文 (普通話)」。
-                                <br><span class="lang-tag">廣東話</span>選「粵語 (香港)」。
-                            </li>
-                        </ul>
-                    </div>
+    <section class="shelf-section">
+        <div class="shelf-header">
+            <h2 class="shelf-title"><span>⭐</span>專屬書架 (最多5個)</h2>
+            <span style="margin-left:auto; font-size:0.85em; opacity:0.6;">拖曳任務至此，或點擊卡片右上角 ⭐</span>
+        </div>
+        <div class="chest-container" id="favorites-container">
+            </div>
+    </section>
+
+    <section class="shelf-section">
+        <div class="shelf-header">
+            <h2 class="shelf-title"><span>📚</span>所有學習任務</h2>
+        </div>
+        <div class="chest-container" id="all-container">
+            </div>
+    </section>
+
+    <div class="emoji-toolbar">
+        <div class="emoji-toolbar-title">心情貼紙</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🔥', this)">🔥</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('💯', this)">💯</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('💡', this)">💡</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🤯', this)">🤯</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('💖', this)">💖</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🌸', this)">🌸</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🏆', this)">🏆</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🍵', this)">🍵</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('👏', this)">👏</div>
+        <div class="emoji-btn" onclick="toggleEmojiStamper('🤔', this)">🤔</div>
+    </div>
+
+    <section class="guide-section">
+        <h2>📱 手機語音播放設定指南 (通用)</h2>
+        <div class="guide-content">
+            <div class="guide-col">
+                <h3>🍎 iOS 用戶</h3>
+                <div class="guide-text">
+                    <ul>
+                        <li><strong>解除靜音模式：</strong>請務必撥動機身側邊開關，確保<strong>不顯示橘色</strong>。</li>
+                        <li><strong>設定語音：</strong>設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文。
+                            <br><span class="lang-tag">普通話</span>選「China mainland／Taiwan」。
+                            <br><span class="lang-tag">廣東話</span>選「Hong Kong」。
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </section>
-    </main>
+            <div class="guide-col">
+                <h3>🤖 Android 用戶</h3>
+                <div class="guide-text">
+                    <ul>
+                        <li><strong>調整媒體音量：</strong>確保拉大的是「媒體/音樂」音量。</li>
+                        <li><strong>設定語音 (TTS)：</strong>設定 → 語言與輸入 → 文字轉語音。
+                            <br><span class="lang-tag">普通話</span>選「中文 (普通話)」。
+                            <br><span class="lang-tag">廣東話</span>選「粵語 (香港)」。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="modal-overlay" id="infoModal">
         <div class="modal-content">
@@ -361,83 +477,251 @@
     </div>
 
     <script>
-        // --- LAN3003 專屬資料庫 (已轉換為學生複習視角) ---
+        // =========================================
+        // 1. 資料庫 (LAN3003 課程資源)
+        // =========================================
         const resources = {
-            2: {
-                title: "介紹技巧大冒險", icon: "🗣️", link: "https://winwin1109.github.io/lt1-describe/", qr: "P2.jpg",
-                goals: "<li>透過遊戲掌握有條理介紹事物的結構，豐富你形容外觀與材質的詞彙，並練習多樣化的開場白。</li>"
-            },
-            3: {
-                title: "比較的力量", icon: "⚖️", link: "https://winwin1109.github.io/3003-lt3-test1/", qr: "P3.jpg",
-                goals: "<li>學習如何比較事物的異同，並熟練掌握分析產品優劣勢的實用技巧。</li>"
-            },
-            4: {
-                title: "溝通回覆遊戲", icon: "📱", link: "https://winwin1109.github.io/3003-LT3-WHATSAPP/", qr: "P4.jpg",
-                goals: "<li>在模擬情境中練習以專業、具備同理心的語氣回覆客戶訊息（如投訴或急迫詢問），建立良好的溝通形象。</li>"
-            },
-            1: {
-                title: "金牌銷售特訓班", icon: "🛥️", link: "https://winwin1109.github.io/3003-lt3-speaking/", qr: "P1.jpg",
-                goals: "<li>挑戰快速分析客戶需求，學習從多角度（設施、服務、價格）比較優勢，並建構出具說服力的推介邏輯。</li>"
-            },
-            12: {
-                title: "會議廳對話練習(一)", icon: "💬", link: "https://winwin1109.github.io/3003-lt4-practise-meeting1/", qr: "P12.jpg",
-                goals: "<li>練習在會議情境中準確聆聽客戶需求，並能根據需求比較與推介最合適的會議場地。</li>"
-            },
-            13: {
-                title: "會議廳對話練習(二)", icon: "📝", link: "https://winwin1109.github.io/3003-lt4-practise-meeting2/", qr: "P13.jpg",
-                goals: "<li>進一步挑戰會議情境的臨場應對，熟練掌握聆聽需求與場地推介的專業技巧。</li>"
-            },
-            14: {
-                title: "訂遊艇對話練習", icon: "🌊", link: "https://winwin1109.github.io/3003-lt4-practise-boat/", qr: "P14.jpg",
-                goals: "<li>模擬真實情境，練習如何針對遊艇服務項目進行詢問、報價，並客觀比較不同方案的優缺點。</li>"
-            },
-            15: {
-                title: "瘋兔推銷特訓班", icon: "🐰", link: "https://winwin1109.github.io/3003-lt4-rabbit/", qr: "P15.jpg",
-                goals: "<li>訓練你在時間壓力下快速判斷客戶需求，並活用推銷話術強化說服力，給出正確回應。</li>"
-            },
-            16: {
-                title: "對話練習：比較與推薦技巧分析", icon: "✅", link: "https://winwin1109.github.io/3003-lt4-answer/", qr: "P16.jpg",
-                goals: "<li>透過核對各個情境（會議、遊艇）的建議回應，自我檢視並鞏固你在溝通與推銷上的邏輯技巧。</li>"
-            },
-            23: {
-                title: "闡述理念簡報設計助理", icon: "💠", link: "https://winwin1109.github.io/3003-designtopicppt/", qr: "P23.jpg",
-                goals: "<li>跟隨系統步驟學習製作簡報，並透過示範教學，掌握如何有邏輯地組織你的匯報講稿。</li>"
-            },
-            26: {
-                title: "工作問題匯報簡報設計助理", icon: "🏢", link: "https://winwin1109.github.io/ploblemsolving-topic/", qr: "P26.jpg",
-                goals: "<li>透過系統引導製作「工作問題匯報」的簡報，學習如何組織清晰、專業的匯報內容來解決問題。</li>"
-            },
-            31: {
-                title: "尋求支持匯報簡報設計助理", icon: "🤝", link: "https://winwin1109.github.io/activity-powerpoint/", qr: "P31.jpg",
-                goals: "<li>學習製作旨在「尋求支持」的簡報，並透過示範掌握如何運用說服性技巧來組織講稿。</li>"
-            },
-            32: {
-                title: "【專業連線社區】腦力激盪平台", icon: "🌐", link: "https://winwin1109.github.io/specialty-connect/", qr: "P32.jpg",
-                goals: "<li>運用「黃金三角」架構，結合你的職業專長與弱勢社群的需求，進行腦力激盪並構思出具體的支援活動。</li>"
-            }
+            2: { title: "介紹技巧大冒險", icon: "🗣️", link: "https://winwin1109.github.io/lt1-describe/", qr: "P2.jpg", goals: "<li>透過遊戲掌握有條理介紹事物的結構，豐富你形容外觀與材質的詞彙，並練習多樣化的開場白。</li>" },
+            3: { title: "比較的力量", icon: "⚖️", link: "https://winwin1109.github.io/3003-lt3-test1/", qr: "P3.jpg", goals: "<li>學習如何比較事物的異同，並熟練掌握分析產品優劣勢的實用技巧。</li>" },
+            4: { title: "溝通回覆遊戲", icon: "📱", link: "https://winwin1109.github.io/3003-LT3-WHATSAPP/", qr: "P4.jpg", goals: "<li>在模擬情境中練習以專業、具備同理心的語氣回覆客戶訊息（如投訴或急迫詢問），建立良好的溝通形象。</li>" },
+            1: { title: "金牌銷售特訓班", icon: "🛥️", link: "https://winwin1109.github.io/3003-lt3-speaking/", qr: "P1.jpg", goals: "<li>挑戰快速分析客戶需求，學習從多角度（設施、服務、價格）比較優勢，並建構出具說服力的推介邏輯。</li>" },
+            12: { title: "會議廳對話練習(一)", icon: "💬", link: "https://winwin1109.github.io/3003-lt4-practise-meeting1/", qr: "P12.jpg", goals: "<li>練習在會議情境中準確聆聽客戶需求，並能根據需求比較與推介最合適的會議場地。</li>" },
+            13: { title: "會議廳對話練習(二)", icon: "📝", link: "https://winwin1109.github.io/3003-lt4-practise-meeting2/", qr: "P13.jpg", goals: "<li>進一步挑戰會議情境的臨場應對，熟練掌握聆聽需求與場地推介的專業技巧。</li>" },
+            14: { title: "訂遊艇對話練習", icon: "🌊", link: "https://winwin1109.github.io/3003-lt4-practise-boat/", qr: "P14.jpg", goals: "<li>模擬真實情境，練習如何針對遊艇服務項目進行詢問、報價，並客觀比較不同方案的優缺點。</li>" },
+            15: { title: "瘋兔推銷特訓班", icon: "🐰", link: "https://winwin1109.github.io/3003-lt4-rabbit/", qr: "P15.jpg", goals: "<li>訓練你在時間壓力下快速判斷客戶需求，並活用推銷話術強化說服力，給出正確回應。</li>" },
+            16: { title: "對話練習：比較與推薦技巧分析", icon: "✅", link: "https://winwin1109.github.io/3003-lt4-answer/", qr: "P16.jpg", goals: "<li>透過核對各個情境（會議、遊艇）的建議回應，自我檢視並鞏固你在溝通與推銷上的邏輯技巧。</li>" },
+            23: { title: "闡述理念簡報設計助理", icon: "💠", link: "https://winwin1109.github.io/3003-designtopicppt/", qr: "P23.jpg", goals: "<li>跟隨系統步驟學習製作簡報，並透過示範教學，掌握如何有邏輯地組織你的匯報講稿。</li>" },
+            26: { title: "工作問題匯報簡報設計助理", icon: "🏢", link: "https://winwin1109.github.io/ploblemsolving-topic/", qr: "P26.jpg", goals: "<li>透過系統引導製作「工作問題匯報」的簡報，學習如何組織清晰、專業的匯報內容來解決問題。</li>" },
+            31: { title: "尋求支持匯報簡報設計助理", icon: "🤝", link: "https://winwin1109.github.io/activity-powerpoint/", qr: "P31.jpg", goals: "<li>學習製作旨在「尋求支持」的簡報，並透過示範掌握如何運用說服性技巧來組織講稿。</li>" },
+            32: { title: "【專業連線社區】腦力激盪平台", icon: "🌐", link: "https://winwin1109.github.io/specialty-connect/", qr: "P32.jpg", goals: "<li>運用「黃金三角」架構，結合你的職業專長與弱勢社群的需求，進行腦力激盪並構思出具體的支援活動。</li>" }
         };
 
-        // LAN3003 課程包含的項目 ID 順序 (已移除 30)
-        const lan3003Items = [2, 3, 4, 1, 12, 13, 14, 15, 16, 23, 26, 31, 32];
+        const MAX_FAVORITES = 5;
+        
+        // =========================================
+        // 2. 狀態管理 (讀取 localStorage)
+        // =========================================
+        let allItemsIds = [2, 3, 4, 1, 12, 13, 14, 15, 16, 23, 26, 31, 32];
+        let favoriteIds = JSON.parse(localStorage.getItem('lan3003_favorites')) || [];
+        let remainingIds = allItemsIds.filter(id => !favoriteIds.includes(id));
+        let stickersData = JSON.parse(localStorage.getItem('lan3003_stickers')) || {};
+        let currentStampEmoji = null;
 
-        // 頁面載入時自動渲染 LAN3003 遊戲列表
+        // =========================================
+        // 3. 畫面渲染與事件綁定
+        // =========================================
         window.onload = function() {
-            const container = document.getElementById('game-container');
-            
-            lan3003Items.forEach(id => {
+            const savedTheme = localStorage.getItem('lan3003_theme') || 'default';
+            const buttons = document.querySelectorAll('.theme-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(savedTheme)) {
+                    setTheme(savedTheme, btn);
+                }
+            });
+
+            renderAll();
+            setupDragAndDrop();
+        };
+
+        function renderAll() {
+            renderShelf('favorites-container', favoriteIds, true);
+            renderShelf('all-container', remainingIds, false);
+        }
+
+        function renderShelf(containerId, idsArray, isFavoriteShelf) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (isFavoriteShelf && idsArray.length === 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; padding:20px; color:var(--text-main); opacity:0.5;">你的專屬書架空空如也，趕快從下方挑選吧！</div>';
+                return;
+            }
+
+            idsArray.forEach(id => {
                 const data = resources[id];
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'chest-item';
-                itemDiv.onclick = () => openModal(id);
-                itemDiv.innerHTML = `
+                itemDiv.draggable = true;
+                itemDiv.dataset.id = id;
+                
+                itemDiv.addEventListener('dragstart', handleDragStart);
+                itemDiv.addEventListener('dragend', handleDragEnd);
+                itemDiv.onclick = (e) => handleCardClick(e, id);
+
+                const favBtn = document.createElement('button');
+                favBtn.className = `fav-btn ${isFavoriteShelf ? 'active' : ''}`;
+                favBtn.innerHTML = isFavoriteShelf ? '⭐' : '☆';
+                favBtn.title = isFavoriteShelf ? "移出最愛" : "加入最愛";
+                favBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(id);
+                };
+
+                const contentHtml = `
                     <div class="chest-title">${data.title}</div>
                     <div class="chest-icon">${data.icon}</div>
+                    <div class="sticker-area" id="stickers-${id}"></div>
                 `;
+                
+                itemDiv.appendChild(favBtn);
+                itemDiv.insertAdjacentHTML('beforeend', contentHtml);
                 container.appendChild(itemDiv);
-            });
-        };
 
-        // --- Modal 邏輯 ---
+                renderStickers(id);
+            });
+        }
+
+        // =========================================
+        // 4. 邏輯處理 (最愛、貼紙、主題)
+        // =========================================
+        function toggleFavorite(id) {
+            id = parseInt(id);
+            if (favoriteIds.includes(id)) {
+                favoriteIds = favoriteIds.filter(fId => fId !== id);
+                remainingIds.push(id);
+                remainingIds.sort((a,b) => allItemsIds.indexOf(a) - allItemsIds.indexOf(b)); 
+            } else {
+                if (favoriteIds.length >= MAX_FAVORITES) {
+                    alert(`最愛書架滿了！最多只能放 ${MAX_FAVORITES} 本喔。`);
+                    return;
+                }
+                remainingIds = remainingIds.filter(rId => rId !== id);
+                favoriteIds.push(id);
+            }
+            saveData();
+            renderAll();
+        }
+
+        function saveData() {
+            localStorage.setItem('lan3003_favorites', JSON.stringify(favoriteIds));
+            localStorage.setItem('lan3003_stickers', JSON.stringify(stickersData));
+        }
+
+        function setTheme(themeName, btn) {
+            document.body.className = '';
+            if (themeName !== 'default') {
+                document.body.classList.add(themeName);
+            }
+            
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            
+            localStorage.setItem('lan3003_theme', themeName);
+        }
+
+        // =========================================
+        // 5. 拖曳功能 (Drag & Drop)
+        // =========================================
+        let draggedId = null;
+
+        function handleDragStart(e) {
+            draggedId = parseInt(this.dataset.id);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.chest-container').forEach(c => c.classList.remove('drag-over'));
+        }
+
+        function setupDragAndDrop() {
+            const containers = document.querySelectorAll('.chest-container');
+            containers.forEach(container => {
+                container.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    container.classList.add('drag-over');
+                });
+                
+                container.addEventListener('dragleave', e => {
+                    container.classList.remove('drag-over');
+                });
+
+                container.addEventListener('drop', e => {
+                    e.preventDefault();
+                    container.classList.remove('drag-over');
+                    
+                    const isDroppingToFav = container.id === 'favorites-container';
+                    const isCurrentlyFav = favoriteIds.includes(draggedId);
+
+                    if (isDroppingToFav && !isCurrentlyFav) {
+                        if (favoriteIds.length >= MAX_FAVORITES) {
+                            alert(`最愛書架滿了！最多只能放 ${MAX_FAVORITES} 本喔。`);
+                            return;
+                        }
+                        toggleFavorite(draggedId);
+                    } else if (!isDroppingToFav && isCurrentlyFav) {
+                        toggleFavorite(draggedId);
+                    }
+                });
+            });
+        }
+
+        // =========================================
+        // 6. Emoji 裝飾系統
+        // =========================================
+        function toggleEmojiStamper(emoji, btn) {
+            if (currentStampEmoji === emoji) {
+                currentStampEmoji = null;
+                btn.classList.remove('selected');
+                document.body.classList.remove('stamping-mode');
+            } else {
+                currentStampEmoji = emoji;
+                document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.body.classList.add('stamping-mode');
+            }
+        }
+
+        function handleCardClick(e, id) {
+            if (currentStampEmoji) {
+                addSticker(id, currentStampEmoji);
+                currentStampEmoji = null;
+                document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+                document.body.classList.remove('stamping-mode');
+            } else {
+                openModal(id);
+            }
+        }
+
+        function addSticker(id, emoji) {
+            if (!stickersData[id]) stickersData[id] = [];
+            if (stickersData[id].length >= 5) {
+                alert("這本書的貼紙太多囉！先撕掉一些吧。");
+                return;
+            }
+            stickersData[id].push(emoji);
+            saveData();
+            renderStickers(id);
+        }
+
+        function removeSticker(e, id, index) {
+            e.stopPropagation();
+            stickersData[id].splice(index, 1);
+            saveData();
+            renderStickers(id);
+        }
+
+        function renderStickers(id) {
+            const area = document.getElementById(`stickers-${id}`);
+            if (!area) return;
+            area.innerHTML = '';
+            
+            if (stickersData[id]) {
+                stickersData[id].forEach((emoji, index) => {
+                    const span = document.createElement('span');
+                    span.className = 'sticker';
+                    span.innerText = emoji;
+                    span.title = "點擊撕下貼紙";
+                    span.onclick = (e) => removeSticker(e, id, index);
+                    area.appendChild(span);
+                });
+            }
+        }
+
+        // =========================================
+        // 7. Modal 視窗邏輯
+        // =========================================
         const modal = document.getElementById('infoModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalGoals = document.getElementById('modalGoals');
@@ -457,47 +741,29 @@
                 this.style.display = 'none';
                 this.parentNode.querySelector('.qr-label').innerText = '(圖片未找到: ' + data.qr + ')';
             };
-            modalQR.onload = function() {
-                this.style.display = 'inline-block';
-            };
+            modalQR.onload = function() { this.style.display = 'inline-block'; };
 
-            copyBtnContainer.innerHTML = `
-                <button class="copy-btn" onclick="copyLink('${data.link}')">
-                    📋 複製連結
-                </button>
-            `;
+            copyBtnContainer.innerHTML = `<button class="copy-btn" onclick="copyLink('${data.link}')">📋 複製連結</button>`;
             
             if (typeof gtag === 'function') {
-                gtag('event', 'view_item', {
-                    'event_category': 'Game Interaction',
-                    'event_label': data.title,
-                    'game_name': data.title
-                });
+                gtag('event', 'view_item', { 'event_category': 'Game Interaction', 'event_label': data.title, 'game_name': data.title });
             }
-            
             modal.style.display = 'flex';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
+        function closeModal() { modal.style.display = 'none'; }
         
         function copyLink(url) {
             navigator.clipboard.writeText(url).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const originalText = btn.innerHTML;
-                
                 btn.innerHTML = '✅ 已複製！';
-                btn.style.backgroundColor = '#d4edda';
-                btn.style.borderColor = '#c3e6cb';
-                
+                btn.style.backgroundColor = 'rgba(139, 160, 130, 0.2)';
                 setTimeout(() => {
                     btn.innerHTML = originalText;
-                    btn.style.backgroundColor = '#f1f1f1';
-                    btn.style.borderColor = '#ccc';
+                    btn.style.backgroundColor = 'transparent';
                 }, 2000);
             }).catch(err => {
-                console.error('複製失敗:', err);
                 alert('複製失敗，請手動複製連結');
             });
         }
@@ -505,18 +771,12 @@
         function trackGameClick() {
             const gameTitle = document.getElementById('modalTitle').innerText;
             if (typeof gtag === 'function') {
-                gtag('event', 'click_game_link', {
-                    'event_category': 'Game Interaction',
-                    'event_label': gameTitle,
-                    'game_name': gameTitle
-                });
+                gtag('event', 'click_game_link', { 'event_category': 'Game Interaction', 'event_label': gameTitle, 'game_name': gameTitle });
             }
         }
 
         window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) { closeModal(); }
         }
     </script>
 </body>
