@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAN3003 課程複習與備考平台</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1G1KSXH8DB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1G1KSXH8DB');
+    </script>
+    <style>
+        :root {
+            --primary-color: #e67e22; /* LAN3003 主色 */
+            --dark-color: #2c3e50;
+            --bg-color: #f4f7f6;
+            --guide-bg: #e8f6f3;
+            --guide-border: #1abc9c;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--dark-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--primary-color);
+        }
+
+        header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+            color: #ecf0f1;
+        }
+
+        /* --- 視圖控制 --- */
+        .shelf-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .shelf-title {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .shelf-title::before {
+            content: '🎯';
+            margin-right: 10px;
+        }
+
+        .chest-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* 遊戲項目樣式 */
+        .chest-item {
+            text-align: center;
+            width: 220px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            user-select: none;
+        }
+
+        .chest-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .chest-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 5px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chest-icon {
+            font-size: 70px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .chest-item:hover .chest-icon {
+            transform: scale(1.1);
+        }
+
+        /* --- 手機語音設定指南 --- */
+        .guide-section {
+            background: var(--guide-bg);
+            border: 2px dashed var(--guide-border);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .guide-section h2 {
+            color: #16a085;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .guide-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .guide-col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .guide-col h3 {
+            color: var(--dark-color);
+            border-bottom: 2px solid #1abc9c;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .guide-text ul { padding-left: 20px; }
+        .guide-text li { margin-bottom: 10px; line-height: 1.6; }
+        
+        .lang-tag {
+            background: #e0f2f1;
+            color: #00897b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 0.85em;
+        }
+
+        /* --- 彈跳視窗 (Modal) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-body h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .goal-list {
+            background: #f9f9f9;
+            padding: 15px 20px 15px 30px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .game-link-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+
+        .game-link-btn:hover { background: #d35400; }
+
+        .qr-display { text-align: center; margin-top: 10px; display: flex; flex-direction: column; align-items: center;}
+        .qr-display img { max-width: 150px; border: 1px solid #ddd; padding: 5px; background: white; }
+        .qr-label { display: block; margin-top: 5px; color: #666; font-size: 0.9rem; }
+        
+        .copy-btn {
+            margin-top: 10px;
+            padding: 6px 12px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #333;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #e0e0e0;
+            border-color: #bbb;
+        }
+
+        @media (max-width: 768px) {
+            .chest-item { width: 100%; max-width: 300px; }
+            header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LAN3003 課程複習與備考平台</h1>
+        <p>各位同學，請點選下方關卡進行考前重點回顧與練習</p>
+    </header>
+
+    <main>
+        <section id="shelf-view" class="view-section active">
+            <div style="background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                <div class="shelf-header">
+                    <h2 class="shelf-title">學習任務一覽</h2>
+                </div>
+                
+                <div class="chest-container" id="game-container">
+                    </div>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h2>📱 手機語音播放設定指南 (通用)</h2>
+            <div class="guide-content">
+                <div class="guide-col">
+                    <h3>🍎 iOS 用戶</h3>
+                    <div class="guide-text">
+                        <ul>
+                            <li><strong>解除靜音模式：</strong>請務必撥動機身側邊開關，確保<strong>不顯示橘色</strong>。</li>
+                            <li><strong>設定語音：</strong>設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文。
+                                <br><span class="lang-tag">普通話</span>選「China mainland／Taiwan」。
+                                <br><span class="lang-tag">廣東話</span>選「Hong Kong」。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="guide-col">
+                    <h3>🤖 Android 用戶</h3>
+                    <div class="guide-text">
+                        <ul>
+                            <li><strong>調整媒體音量：</strong>確保拉大的是「媒體/音樂」音量。</li>
+                            <li><strong>設定語音 (TTS)：</strong>設定 → 語言與輸入 → 文字轉語音。
+                                <br><span class="lang-tag">普通話</span>選「中文 (普通話)」。
+                                <br><span class="lang-tag">廣東話</span>選「粵語 (香港)」。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-header" id="modalTitle">標題</div>
+            <div class="modal-body">
+                <h3>🎯 學習目標</h3>
+                <div id="modalGoals"></div>
+                <div class="action-area">
+                    <a href="#" target="_blank" id="modalLink" class="game-link-btn" onclick="trackGameClick()">👉 進入複習任務</a>
+                    <div class="qr-display">
+                        <img src="" alt="QR Code" id="modalQR">
+                        <span class="qr-label">掃描 QR Code 開啟</span>
+                        <div id="copyBtnContainer"></div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LAN3003 專屬資料庫 (已轉換為學生複習視角) ---
+        const resources = {
+            2: {
+                title: "介紹技巧大冒險", icon: "🗣️", link: "https://winwin1109.github.io/lt1-describe/", qr: "P2.jpg",
+                goals: "<li>透過遊戲掌握有條理介紹事物的結構，豐富你形容外觀與材質的詞彙，並練習多樣化的開場白。</li>"
+            },
+            3: {
+                title: "比較的力量", icon: "⚖️", link: "https://winwin1109.github.io/3003-lt3-test1/", qr: "P3.jpg",
+                goals: "<li>學習如何比較事物的異同，並熟練掌握分析產品優劣勢的實用技巧。</li>"
+            },
+            4: {
+                title: "溝通回覆遊戲", icon: "📱", link: "https://winwin1109.github.io/3003-LT3-WHATSAPP/", qr: "P4.jpg",
+                goals: "<li>在模擬情境中練習以專業、具備同理心的語氣回覆客戶訊息（如投訴或急迫詢問），建立良好的溝通形象。</li>"
+            },
+            1: {
+                title: "金牌銷售特訓班", icon: "🛥️", link: "https://winwin1109.github.io/3003-lt3-speaking/", qr: "P1.jpg",
+                goals: "<li>挑戰快速分析客戶需求，學習從多角度（設施、服務、價格）比較優勢，並建構出具說服力的推介邏輯。</li>"
+            },
+            12: {
+                title: "會議廳對話練習(一)", icon: "💬", link: "https://winwin1109.github.io/3003-lt4-practise-meeting1/", qr: "P12.jpg",
+                goals: "<li>練習在會議情境中準確聆聽客戶需求，並能根據需求比較與推介最合適的會議場地。</li>"
+            },
+            13: {
+                title: "會議廳對話練習(二)", icon: "📝", link: "https://winwin1109.github.io/3003-lt4-practise-meeting2/", qr: "P13.jpg",
+                goals: "<li>進一步挑戰會議情境的臨場應對，熟練掌握聆聽需求與場地推介的專業技巧。</li>"
+            },
+            14: {
+                title: "訂遊艇對話練習", icon: "🌊", link: "https://winwin1109.github.io/3003-lt4-practise-boat/", qr: "P14.jpg",
+                goals: "<li>模擬真實情境，練習如何針對遊艇服務項目進行詢問、報價，並客觀比較不同方案的優缺點。</li>"
+            },
+            15: {
+                title: "瘋兔推銷特訓班", icon: "🐰", link: "https://winwin1109.github.io/3003-lt4-rabbit/", qr: "P15.jpg",
+                goals: "<li>訓練你在時間壓力下快速判斷客戶需求，並活用推銷話術強化說服力，給出正確回應。</li>"
+            },
+            16: {
+                title: "對話練習：比較與推薦技巧分析", icon: "✅", link: "https://winwin1109.github.io/3003-lt4-answer/", qr: "P16.jpg",
+                goals: "<li>透過核對各個情境（會議、遊艇）的建議回應，自我檢視並鞏固你在溝通與推銷上的邏輯技巧。</li>"
+            },
+            23: {
+                title: "闡述理念簡報設計助理", icon: "💠", link: "https://winwin1109.github.io/3003-designtopicppt/", qr: "P23.jpg",
+                goals: "<li>跟隨系統步驟學習製作簡報，並透過示範教學，掌握如何有邏輯地組織你的匯報講稿。</li>"
+            },
+            26: {
+                title: "工作問題匯報簡報設計助理", icon: "🏢", link: "https://winwin1109.github.io/ploblemsolving-topic/", qr: "P26.jpg",
+                goals: "<li>透過系統引導製作「工作問題匯報」的簡報，學習如何組織清晰、專業的匯報內容來解決問題。</li>"
+            },
+            31: {
+                title: "尋求支持匯報簡報設計助理", icon: "🤝", link: "https://winwin1109.github.io/activity-powerpoint/", qr: "P31.jpg",
+                goals: "<li>學習製作旨在「尋求支持」的簡報，並透過示範掌握如何運用說服性技巧來組織講稿。</li>"
+            },
+            32: {
+                title: "【專業連線社區】腦力激盪平台", icon: "🌐", link: "https://winwin1109.github.io/specialty-connect/", qr: "P32.jpg",
+                goals: "<li>運用「黃金三角」架構，結合你的職業專長與弱勢社群的需求，進行腦力激盪並構思出具體的支援活動。</li>"
+            }
+        };
+
+        // LAN3003 課程包含的項目 ID 順序 (已移除 30)
+        const lan3003Items = [2, 3, 4, 1, 12, 13, 14, 15, 16, 23, 26, 31, 32];
+
+        // 頁面載入時自動渲染 LAN3003 遊戲列表
+        window.onload = function() {
+            const container = document.getElementById('game-container');
+            
+            lan3003Items.forEach(id => {
+                const data = resources[id];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'chest-item';
+                itemDiv.onclick = () => openModal(id);
+                itemDiv.innerHTML = `
+                    <div class="chest-title">${data.title}</div>
+                    <div class="chest-icon">${data.icon}</div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        };
+
+        // --- Modal 邏輯 ---
+        const modal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalGoals = document.getElementById('modalGoals');
+        const modalLink = document.getElementById('modalLink');
+        const modalQR = document.getElementById('modalQR');
+        const copyBtnContainer = document.getElementById('copyBtnContainer');
+
+        function openModal(id) {
+            const data = resources[id];
+            modalTitle.innerText = data.title;
+            modalGoals.innerHTML = `<ul class="goal-list">${data.goals}</ul>`;
+            modalLink.href = data.link;
+            modalQR.src = data.qr;
+            modalQR.alt = `QR Code for ${data.title}`;
+            
+            modalQR.onerror = function() {
+                this.style.display = 'none';
+                this.parentNode.querySelector('.qr-label').innerText = '(圖片未找到: ' + data.qr + ')';
+            };
+            modalQR.onload = function() {
+                this.style.display = 'inline-block';
+            };
+
+            copyBtnContainer.innerHTML = `
+                <button class="copy-btn" onclick="copyLink('${data.link}')">
+                    📋 複製連結
+                </button>
+            `;
+            
+            if (typeof gtag === 'function') {
+                gtag('event', 'view_item', {
+                    'event_category': 'Game Interaction',
+                    'event_label': data.title,
+                    'game_name': data.title
+                });
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+        
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                
+                btn.innerHTML = '✅ 已複製！';
+                btn.style.backgroundColor = '#d4edda';
+                btn.style.borderColor = '#c3e6cb';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = '#f1f1f1';
+                    btn.style.borderColor = '#ccc';
+                }, 2000);
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                alert('複製失敗，請手動複製連結');
+            });
+        }
+        
+        function trackGameClick() {
+            const gameTitle = document.getElementById('modalTitle').innerText;
+            if (typeof gtag === 'function') {
+                gtag('event', 'click_game_link', {
+                    'event_category': 'Game Interaction',
+                    'event_label': gameTitle,
+                    'game_name': gameTitle
+                });
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
